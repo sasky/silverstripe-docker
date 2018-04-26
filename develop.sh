@@ -2,6 +2,7 @@
 
 # Set environment variables for dev
 export APP_NAME=${APP_NAME:-test.com}
+export APP_ENV=${APP_ENV:-dev}
 export APP_PORT=${APP_PORT:-8888}
 export DB_PORT=${DB_PORT:-3399}
 export DB_ROOT_PASS=${DB_ROOT_PASS:-root}
@@ -14,7 +15,7 @@ export DB_PASS=${DB_PASS:-root}
 DIR_NAME="$( dirname "${BASH_SOURCE[0]}")"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Create docker-compose command to run
-COMPOSE="docker-compose -f $DIR/docker-compose.yml"
+COMPOSE="docker-compose -f $DIR/docker-compose.yml --project-name ${APP_NAME}"
 
 # If we pass any arguments...
 if [ $# -gt 0 ];then
@@ -26,11 +27,11 @@ if [ $# -gt 0 ];then
         $COMPOSE run --rm \
         -w /var/www/html \
         app \
-        composer create-project silverstripe/installer ./"${APP_NAME}" ^4 &&
+        composer create-project silverstripe/installer ./"${APP_NAME}" ^4 
         # todo also copy .env file
-        cd "${APP_NAME}" &&
-        composer require silverstripe-docker &&
-        rm -r ../silverstripe-docker  
+        # && cd "${APP_NAME}" &&
+        # composer require silverstripe-docker &&
+        # rm -r ../silverstripe-docker  
     elif [ "$1" == "composer" ]; then
         shift 1
           $COMPOSE run --rm \
